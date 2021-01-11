@@ -8,7 +8,7 @@ if ((EUID != 0)); then
   exit 1
 fi
 
-#install useful software
+#intsall useful software
 apt-get install unzip
 apt-get install gnumeric
 apt-get install inkscape

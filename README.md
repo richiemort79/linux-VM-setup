@@ -1,22 +1,22 @@
 # linux-VM-setup
 A bash script to set up Lancaster University virtual Linux installations for image analysis. 
 
-The script adds an fstab entry for MortLab and mounts it. Customise the lines after '#create the Mortlab directory in home if it does not exist' to point it at a differnt /luna share.
+The script adds an fstab entry for MortLab and mounts it. Customise the lines after '#create the Mortlab directory in home if it does not exist' to point it at a different /luna share.
 
 The script installs:
 
-gnumeric
-inkscape
-Fiji (in your home directory)
+gnumeric;
+inkscape;
+Fiji; (in your home directory)
 
-Customise the lines after '#intsall useful software' to add over software form the BioLinux repos.
+Customise the lines after '#install useful software' to add over software form the BioLinux repos.
 
 It adds the following toolsets to Fiji:
 
 Cell_Patterning.ijm
 Fucci_Tools.ijm
 
-Customise the lines after '#add cell_patterning and fucci_tools toolsets' to add over macros/plugins/toolsets
+Customise the lines after '#add cell_patterning and fucci_tools toolsets' to add other macros/plugins/toolsets
 
 Usage:
 
