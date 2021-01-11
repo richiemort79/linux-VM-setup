@@ -9,12 +9,12 @@ gnumeric;
 inkscape;
 Fiji; (in your home directory)
 
-Customise the lines after '#install useful software' to add over software form the BioLinux repos.
+Customise the lines after '#install useful software' to add other software from the BioLinux repos.
 
 It adds the following toolsets to Fiji:
 
-Cell_Patterning.ijm
-Fucci_Tools.ijm
+Cell_Patterning.ijm;
+Fucci_Tools.ijm;
 
 Customise the lines after '#add cell_patterning and fucci_tools toolsets' to add other macros/plugins/toolsets
 
