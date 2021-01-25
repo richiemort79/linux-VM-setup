@@ -12,6 +12,7 @@ fi
 apt-get install unzip
 apt-get install gnumeric
 apt-get install inkscape
+apt-get install filezilla
 
 #create the Mortlab directory in home if it does not exist
 if [[ ! -d "Mortlab" ]]; then
