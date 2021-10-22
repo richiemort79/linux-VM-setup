@@ -8,33 +8,36 @@ if ((EUID != 0)); then
   exit 1
 fi
 
-#install useful software
-apt-get install unzip
-apt-get install gnumeric
-apt-get install inkscape
-apt-get install filezilla
+#install useful software if you need it by adding the apt command here
+#apt-get install unzip
+#apt-get install gnumeric
+#apt-get install inkscape
+#apt-get install filezilla
 
-#create the Mortlab directory in home if it does not exist
-if [[ ! -d "Mortlab" ]]; then
-  mkdir /home/$SUDO_USER/Mortlab
+#prompt for the name of the target luna directory
+  read -s -p "Enter Luna dir: " luna_dir
+
+#create the local directory in which to mount your luna share if it does not exist
+if [ ! -d /home/$SUDO_USER/$luna_dir ]; then
+  mkdir /home/$SUDO_USER/$luna_dir
 else
-  echo "Mortlab directory already exists, skipping..."
+  echo $luna_dir" directory already exists, skipping..."
 fi
 
 #check for the fstab entry
-if grep -Fxq "#Mortlab" /etc/fstab
+if grep -Fxq "$luna_dir" /etc/fstab
 then
-    echo "There is already a Mortlab entry in fstab, skipping..."
+    echo "There is already a " $luna_dir " entry in fstab, skipping..."
 else
-  echo "Adding a Mortlab entry in fstab..."
+  echo "Adding a "$luna_dir" entry in fstab..."
 #prompt for password
   read -s -p "Enter Password: " password
 #add line to fstab and mount
-  echo "#Mortlab" >> /etc/fstab
-  { echo -n "//luna.lancs.ac.uk/FHM/BLS/MortLab /home/" ; echo -n $SUDO_USER ; echo -n "/Mortlab cifs uid=" ; echo -n $SUDO_UID ; echo -n ",user="; echo -n $SUDO_USER; echo -n ",pass="; echo -n $password; echo -n ",vers=2.1,iocharset=utf8,sec=ntlmssp  0  0" ; } >> /etc/fstab
+  echo -n "#"luna_dir >> /etc/fstab
+  { echo -n "//luna.lancs.ac.uk/FHM/BLS/"$luna_dir "/home/" ; echo -n $SUDO_USER ; echo -n "/"$luna_dir" cifs uid=" ; echo -n $SUDO_UID ; echo -n ",user="; echo -n $SUDO_USER; echo -n ",pass="; echo -n $password; echo -n ",vers=2.1,iocharset=utf8,sec=ntlmssp  0  0" ; } >> /etc/fstab
 fi
 
-#mount the mortlab share
+#mount the luna share
 mount -a
 
 #prompt for target folder
@@ -45,19 +48,19 @@ read userdir
 if [[ -d "/home/$SUDO_USER/Mortlab/$userdir" ]]; then
 #cd to userdir
   echo "entering directory..........."
-  cd /home/$SUDO_USER/Mortlab/$userdir
+  cd /home/$SUDO_USER/$luna_dir/$userdir
 else
   echo "Directory $userdir does not exist, skipping..."
   exit
 fi
 
 #look for a fiji install and download if not found
-if [[ ! -d "/home/$SUDO_USER/Mortlab/$userdir/Fiji.app" ]]; then
+if [[ ! -d "/home/$SUDO_USER/$luna_dir/$userdir/Fiji.app" ]]; then
   wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
   unzip fiji-linux64.zip
   rm fiji-linux64.zip
 #add cell_patterning and fucci_tools toolsets
-  cd /home/$SUDO_USER/Mortlab/$userdir/Fiji.app/macros/toolsets
+  cd /home/$SUDO_USER/$luna_dir/$userdir/Fiji.app/macros/toolsets
   wget https://www.dropbox.com/s/z8vz13vf1zju8dw/Fucci_Tools.ijm
   wget https://www.dropbox.com/s/gt0ara1aeqm9sg3/Cell_Patterning.ijm
   cd ..
@@ -67,7 +70,5 @@ else
 fi
 
 #launch fiji
-cd /home/$SUDO_USER/Mortlab/$userdir/Fiji.app
+cd /home/$SUDO_USER/$luna_dir/$userdir/Fiji.app
 ./ImageJ-linux64
-
-
