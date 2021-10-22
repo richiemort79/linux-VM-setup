@@ -25,7 +25,7 @@ else
 fi
 
 #check for the fstab entry
-if grep -Fxq "$luna_dir" /etc/fstab
+if grep -q $luna_dir /etc/fstab
 then
     echo "There is already a " $luna_dir " entry in fstab, skipping..."
 else
@@ -33,8 +33,9 @@ else
 #prompt for password
   read -s -p "Enter Password: " password
 #add line to fstab and mount
-  echo -n "#"luna_dir >> /etc/fstab
+  echo "#"$luna_dir >> /etc/fstab
   { echo -n "//luna.lancs.ac.uk/FHM/BLS/"$luna_dir "/home/" ; echo -n $SUDO_USER ; echo -n "/"$luna_dir" cifs uid=" ; echo -n $SUDO_UID ; echo -n ",user="; echo -n $SUDO_USER; echo -n ",pass="; echo -n $password; echo -n ",vers=2.1,iocharset=utf8,sec=ntlmssp  0  0" ; } >> /etc/fstab
+  echo \ >> /etc/fstab
 fi
 
 #mount the luna share
