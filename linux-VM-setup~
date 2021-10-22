@@ -1,0 +1,80 @@
+#!/bin/bash
+
+#bash script to set up a virtual linux machine for image analysis by mounting the appropriate luna share and installing imagej
+
+#check for root or sudo privileges
+if ((EUID != 0)); then
+  echo >&2 'Error: script not running as root or with sudo! Exiting...'
+  exit 1
+fi
+
+#install useful software if you need it by adding the apt command here
+#apt-get install unzip
+apt-get install gnumeric
+#apt-get install inkscape
+#apt-get install filezilla
+
+#install r-studio if required
+apt install gdebi-core
+wget https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2021.09.0-351-amd64.deb
+sudo gdebi rstudio-2021.09.0-351-amd64.deb
+
+#prompt for the name of the target luna directory
+  read -s -p "Enter Luna dir: " luna_dir
+
+#create the local directory in which to mount your luna share if it does not exist
+if [ ! -d /home/$SUDO_USER/$luna_dir ]; then
+  mkdir /home/$SUDO_USER/$luna_dir
+else
+  echo $luna_dir" directory already exists, skipping..."
+fi
+
+#check for the fstab entry
+if grep -q $luna_dir /etc/fstab
+then
+    echo "There is already a " $luna_dir " entry in fstab, skipping..."
+else
+  echo "Adding a "$luna_dir" entry in fstab..."
+#prompt for password
+  read -s -p "Enter Password: " password
+#add line to fstab and mount
+  echo "#"$luna_dir >> /etc/fstab
+  { echo -n "//luna.lancs.ac.uk/FHM/BLS/"$luna_dir "/home/" ; echo -n $SUDO_USER ; echo -n "/"$luna_dir" cifs uid=" ; echo -n $SUDO_UID ; echo -n ",user="; echo -n $SUDO_USER; echo -n ",pass="; echo -n $password; echo -n ",vers=2.1,iocharset=utf8,sec=ntlmssp  0  0" ; } >> /etc/fstab
+  echo \ >> /etc/fstab
+fi
+
+#mount the luna share
+mount -a
+
+#prompt for target folder
+echo "Enter the name of your user directory and press ENTER"
+read userdir
+
+#check the userdir exists
+if [[ -d "/home/$SUDO_USER/Mortlab/$userdir" ]]; then
+#cd to userdir
+  echo "entering directory..........."
+  cd /home/$SUDO_USER/$luna_dir/$userdir
+else
+  echo "Directory $userdir does not exist, skipping..."
+  exit
+fi
+
+#look for a fiji install and download if not found
+if [[ ! -d "/home/$SUDO_USER/$luna_dir/$userdir/Fiji.app" ]]; then
+  wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+  unzip fiji-linux64.zip
+  rm fiji-linux64.zip
+#add cell_patterning and fucci_tools toolsets
+  cd /home/$SUDO_USER/$luna_dir/$userdir/Fiji.app/macros/toolsets
+  wget https://www.dropbox.com/s/z8vz13vf1zju8dw/Fucci_Tools.ijm
+  wget https://www.dropbox.com/s/gt0ara1aeqm9sg3/Cell_Patterning.ijm
+  cd ..
+  wget https://www.dropbox.com/s/wyqhdrj5s0a4jhu/fucci_tools_profile.txt  
+else
+  echo "Fiji install exists, skipping..."
+fi
+
+#launch fiji
+cd /home/$SUDO_USER/$luna_dir/$userdir/Fiji.app
+./ImageJ-linux64
