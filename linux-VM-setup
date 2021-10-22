@@ -57,7 +57,7 @@ echo "Enter the name of your user directory and press ENTER"
 read userdir
 
 #check the userdir exists
-if [[ -d "/home/$SUDO_USER/Mortlab/$userdir" ]]; then
+if [[ -d "/home/$SUDO_USER/$luna_dir/$userdir" ]]; then
 #cd to userdir
     echo "entering directory..........."
     cd /home/$SUDO_USER/$luna_dir/$userdir
