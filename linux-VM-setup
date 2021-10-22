@@ -10,7 +10,7 @@ fi
 
 #install useful software if you need it by adding the apt command here
 #apt-get install unzip
-#apt-get install gnumeric
+apt-get install gnumeric
 #apt-get install inkscape
 #apt-get install filezilla
 
