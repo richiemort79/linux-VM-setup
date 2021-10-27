@@ -2,6 +2,9 @@
 
 #bash script to set up a virtual linux machine for image analysis by mounting the appropriate luna share and installing imagej
 
+luna_dir = "Bioimaging"
+userdir = "mort-r"
+
 #check for root or sudo privileges
 if ((EUID != 0)); then
     echo >&2 'Error: script not running as root or with sudo! Exiting...'
@@ -26,8 +29,8 @@ else
 fi
 
 #prompt for the name of the target luna directory
-read -s -p "Enter Luna dir: " luna_dir
-
+#read -s -p "Enter Luna dir: " luna_dir
+#luna_dir = "Bioimaging"
 
 #create the local directory in which to mount your luna share if it does not exist
 if [ ! -d /home/$SUDO_USER/$luna_dir ]; then
@@ -54,8 +57,8 @@ fi
 mount -a
 
 #prompt for target folder
-read -s -p "Enter the name of your user directory:" userdir 
-
+#read -s -p "Enter the name of your user directory:" userdir 
+#userdir = "mort-r"
 
 #check the userdir exists
 if [[ -d "/home/$SUDO_USER/$luna_dir/$userdir" ]]; then
