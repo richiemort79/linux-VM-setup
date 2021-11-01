@@ -26,8 +26,7 @@ else
 fi
 
 #prompt for the name of the target luna directory
-read -s -p "Enter Luna dir: " luna_dir
-
+read -p "Enter Luna dir: " luna_dir
 
 #create the local directory in which to mount your luna share if it does not exist
 if [ ! -d /home/$SUDO_USER/$luna_dir ]; then
@@ -42,8 +41,10 @@ then
     echo "There is already a " $luna_dir " entry in fstab, skipping..."
 else
     echo "Adding a "$luna_dir" entry in fstab..."
+
 #prompt for password
     read -s -p "Enter Password: " password
+
 #add line to fstab and mount
     echo "#"$luna_dir >> /etc/fstab
     { echo -n "//luna.lancs.ac.uk/FHM/BLS/"$luna_dir "/home/" ; echo -n $SUDO_USER ; echo -n "/"$luna_dir" cifs uid=" ; echo -n $SUDO_UID ; echo -n ",user="; echo -n $SUDO_USER; echo -n ",pass="; echo -n $password; echo -n ",vers=2.1,iocharset=utf8,sec=ntlmssp  0  0" ; } >> /etc/fstab
@@ -54,8 +55,7 @@ fi
 mount -a
 
 #prompt for target folder
-read -s -p "Enter the name of your user directory:" userdir 
-
+read -p "Enter the name of your user directory:" userdir 
 
 #check the userdir exists
 if [[ -d "/home/$SUDO_USER/$luna_dir/$userdir" ]]; then
